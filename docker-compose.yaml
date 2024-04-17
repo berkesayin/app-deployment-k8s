@@ -1,0 +1,21 @@
+version: "3.4"
+services: 
+  signup-backend: 
+    container_name: signup-be-c
+    build: ./backend
+    ports: 
+      - 3000:3000
+  signup-frontend: 
+    container_name: signup-fe-c
+    build: ./frontend
+    ports: 
+      - 9000:8080
+  mongodb: 
+    container_name: mongo-db
+    image: mongo
+    ports: 
+      - 27017:27017
+    volumes: 
+      - todo-app-data:/data/db
+volumes:
+  todo-app-data:
