@@ -516,3 +516,43 @@ spec:
 The `backend deployment` includes environment variable configurations for connecting to `MongoDB`.
 
 ### Deploy Web App Frontend <a name="deploy-fe"></a>
+
+`webapp-fe.yaml`
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapp-fe-deployment
+  labels:
+    app: webapp-fe
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webapp-fe
+  template:
+    metadata:
+      labels:
+        app: webapp-fe
+    spec:
+      containers:
+        - name: webapp-fe
+          image: berkesayin/form-app-frontend
+          ports:
+            - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: webapp-fe-service
+spec:
+  type: NodePort
+  selector:
+    app: webapp-fe
+  ports:
+    - protocol: TCP
+      port: 9000 # Matches the port exposed previously with Docker Compose
+      targetPort: 8080 # Matches the port React app is running inside the container
+      nodePort: 30101
+```
