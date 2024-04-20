@@ -18,6 +18,8 @@ This is a multi-container Sign Up Form project. `Dockerfile` and `Docker Compose
 12. [Deploy Web App Backend](#deploy-be)
 13. [Deploy Web App Frontend](#deploy-fe)
 14. [Create All Components In Kubernetes](#create-components)
+15. [Get Information About K8S Components](#get-info)
+16. [Access Web App In Browser](#access)
 
 ### Introduction <a name="intro"></a>
 
@@ -609,3 +611,145 @@ mongo-deployment-7f85cb64d6-bw6bc       1/1     Running            2 (7m41s ago)
 webapp-be-deployment-5448fd9cc6-5jjzw   1/1     Running            0               5m2s
 webapp-fe-deployment-7d9bbd8f59-vzppj   1/1     Running            0               4m7s
 ```
+
+### Create All Components In Kubernetes <a name="get-info"></a>
+
+##### Get All
+
+```bash
+kubectl get all
+```
+
+This command includes `deployments`, the `pods` behind the `deployment`, and all the `services`.
+
+```bash
+NAME                                        READY   STATUS             RESTARTS         AGE
+pod/mongo-deployment-7f85cb64d6-bw6bc       1/1     Running            2 (10m ago)      26m
+pod/webapp-be-deployment-5448fd9cc6-5jjzw   1/1     Running            0                8m7s
+pod/webapp-fe-deployment-7d9bbd8f59-vzppj   1/1     Running            0                7m12s
+```
+
+```bash
+NAME                        TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+service/kubernetes          ClusterIP   10.96.0.1       <none>        443/TCP          32d
+service/mongo-service       ClusterIP   10.96.149.186   <none>        80/TCP           31d
+service/webapp-be-service   NodePort    10.100.47.128   <none>        3000:30200/TCP   20m
+service/webapp-fe-service   NodePort    10.97.246.146   <none>        9000:30201/TCP   20m
+```
+
+```bash
+NAME                                   READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/mongo-deployment       1/1     1            1           31d
+deployment.apps/webapp-be-deployment   1/1     1            1           21m
+deployment.apps/webapp-fe-deployment   1/1     1            1           20m
+```
+
+##### Get Components' Info
+
+ConfigMap
+
+```bash
+kubectl get configmap
+```
+
+```bash
+NAME               DATA   AGE
+kube-root-ca.crt   1      32d
+mongo-config       1      31d
+```
+
+Secret
+
+```bash
+kubectl get secret
+```
+
+```bash
+NAME           TYPE     DATA   AGE
+mongo-secret   Opaque   2      31d
+```
+
+Deployment
+
+```bash
+kubectl get deployment
+```
+
+```bash
+NAME                   READY   UP-TO-DATE   AVAILABLE   AGE
+mongo-deployment       1/1     1            1           31d
+webapp-be-deployment   1/1     1            1           38m
+webapp-fe-deployment   1/1     1            1           37m
+```
+
+Service
+
+```bash
+kubectl get service
+```
+
+```bash
+NAME                TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+kubernetes          ClusterIP   10.96.0.1       <none>        443/TCP          32d
+mongo-service       ClusterIP   10.96.149.186   <none>        80/TCP           31d
+webapp-be-service   NodePort    10.100.47.128   <none>        3000:30200/TCP   39m
+webapp-fe-service   NodePort    10.97.246.146   <none>        9000:30201/TCP   39m
+```
+
+### Logs
+
+```bash
+kubectl get pods
+```
+
+```bash
+NAME                                    READY   STATUS             RESTARTS         AGE
+mongo-deployment-7f85cb64d6-bw6bc       1/1     Running            2 (30m ago)      46m
+webapp-be-deployment-5448fd9cc6-5jjzw   1/1     Running            0                27m
+webapp-fe-deployment-7d9bbd8f59-vzppj   1/1     Running            0                27m
+```
+
+Logs
+
+```bash
+kubectl logs mongo-deployment-7f85cb64d6-bw6bc
+```
+
+```bash
+kubectl logs webapp-be-deployment-5448fd9cc6-5jjzw
+```
+
+```bash
+kubectl logs webapp-fe-deployment-7d9bbd8f59-vzppj
+```
+
+### Access Web App In Browser <a name="access"></a>
+
+### Minikube IP
+
+```bash
+minikube ip
+```
+
+```bash
+192.168.49.2
+```
+
+or
+
+```bash
+kubectl get node -o wide
+```
+
+We can also use `-o wide` option with any other get command or services, pods etc to get some additional info.
+
+```bash
+NAME       STATUS   ROLES           AGE   VERSION   INTERNAL-IP    EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION    CONTAINER-RUNTIME
+minikube   Ready    control-plane   32d   v1.28.3   192.168.49.2   <none>        Ubuntu 22.04.3 LTS   6.6.12-linuxkit   docker://24.0.7
+```
+
+Here, we get the `INTERNAL_IP` address of the `node`: `192.168.49.2`
+
+So, we found the minikube IP address. `192.168.49.2`. Now, we access the application at this port. `30200`
+
+`192.168.49.2:30200`
