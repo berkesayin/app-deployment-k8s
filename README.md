@@ -513,7 +513,7 @@ spec:
     - protocol: TCP
       port: 3000
       targetPort: 3000
-      nodePort: 30100
+      nodePort: 30201
 ```
 
 The `backend deployment` includes environment variable configurations for connecting to `MongoDB`.
@@ -557,7 +557,7 @@ spec:
     - protocol: TCP
       port: 9000 # Matches the port exposed previously with Docker Compose
       targetPort: 8080 # Matches the port React app is running inside the container
-      nodePort: 30101
+      nodePort: 30200
 ```
 
 ### Create All Components In Kubernetes <a name="deploy-fe"></a>

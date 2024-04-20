@@ -32,4 +32,4 @@ spec:
     - protocol: TCP
       port: 9000 # Matches the port exposed previously with Docker Compose
       targetPort: 8080 # Matches the port React app is running inside the container
-      nodePort: 30201
+      nodePort: 30200
