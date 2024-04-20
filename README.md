@@ -415,6 +415,46 @@ data:
 
 A `Kubernetes deployment` provides a means of changing or modifying the state of a pod, which may be one or more containers that are running, or a group of duplicate pods, known as ReplicaSets. Using a deployment allows you to easily keep a group of identical pods running with a common configuration. Once you have defined and deployed your `deployment` Kubernetes will then work to make sure all pods managed by the deployment meet whatever requirements you have set.
 
+`mongo.yaml`: `Deployment` and `Service` Configuration for `MongoDB`
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongo-deployment
+  labels:
+    app: mongo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongo
+  template:
+    metadata:
+      labels:
+        app: mongo
+    spec:
+      containers:
+        - name: mongodb
+          image: mongo:5.0
+          ports:
+            - containerPort: 27017
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo-service
+spec:
+  selector:
+    app: mongo
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 27017
+```
+
+We added a `Service` configuration because every application needs a service in `Kubernetes` and that's either a separate `yaml unit` or `yaml section` and we're going to separate it using three dashes `---` which is basic `yaml` syntax.
+
 ### Deploy Web App Backend <a name="deploy-be"></a>
 
 ### Deploy Web App Frontend <a name="deploy-fe"></a>
