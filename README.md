@@ -1,4 +1,4 @@
-## App Deployment - Docker & Kubernetes
+## App Deployment - Building Images With Docker & Deploying Apps With Kubernetes
 
 This is a multi-container Sign Up Form project. `Dockerfile` and `Docker Compose` used here to run the application on 3 containers. Follow the contents for details and usage.
 
