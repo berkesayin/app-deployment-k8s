@@ -413,6 +413,8 @@ data:
 
 ### Deploy MongoDB Database <a name="deploy-mongo"></a>
 
+A `Kubernetes deployment` provides a means of changing or modifying the state of a pod, which may be one or more containers that are running, or a group of duplicate pods, known as ReplicaSets. Using a deployment allows you to easily keep a group of identical pods running with a common configuration. Once you have defined and deployed your `deployment` Kubernetes will then work to make sure all pods managed by the deployment meet whatever requirements you have set.
+
 ### Deploy Web App Backend <a name="deploy-be"></a>
 
 ### Deploy Web App Frontend <a name="deploy-fe"></a>
