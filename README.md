@@ -560,7 +560,7 @@ spec:
       nodePort: 30200
 ```
 
-### Create All Components In Kubernetes <a name="deploy-fe"></a>
+### Create All Components In Kubernetes <a name="create-components"></a>
 
 ```bash
 kubectl apply -f <file-name.yaml>
@@ -612,7 +612,7 @@ webapp-be-deployment-5448fd9cc6-5jjzw   1/1     Running            0            
 webapp-fe-deployment-7d9bbd8f59-vzppj   1/1     Running            0               4m7s
 ```
 
-### Create All Components In Kubernetes <a name="get-info"></a>
+### Get Information About K8S Components <a name="get-info"></a>
 
 ##### Get All
 
@@ -750,6 +750,6 @@ minikube   Ready    control-plane   32d   v1.28.3   192.168.49.2   <none>       
 
 Here, we get the `INTERNAL_IP` address of the `node`: `192.168.49.2`
 
-So, we found the minikube IP address. `192.168.49.2`. Now, we access the application at this port. `30200`
+So, we found the `minikube IP` address. `192.168.49.2`. Now, we access the application at this port. `30200`
 
 `192.168.49.2:30200`
