@@ -457,4 +457,62 @@ We added a `Service` configuration because every application needs a service in 
 
 ### Deploy Web App Backend <a name="deploy-be"></a>
 
+`webapp-be.yaml`
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapp-be-deployment
+  labels:
+    app: webapp-be
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webapp-be
+  template:
+    metadata:
+      labels:
+        app: webapp-be
+    spec:
+      containers:
+        - name: webapp-be
+          image: berkesayin/signup-form-backend
+          ports:
+            - containerPort: 3000
+          env:
+            - name: USER_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-secret
+                  key: mongo-user
+            - name: USER_PWD
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-secret
+                  key: mongo-password
+            - name: DB_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: mongo-config
+                  key: mongo-url
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: webapp-be-service
+spec:
+  type: NodePort
+  selector:
+    app: webapp-be
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+      nodePort: 30100
+```
+
+The `backend deployment` includes environment variable configurations for connecting to `MongoDB`.
+
 ### Deploy Web App Frontend <a name="deploy-fe"></a>
