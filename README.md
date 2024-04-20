@@ -725,7 +725,7 @@ kubectl logs webapp-fe-deployment-7d9bbd8f59-vzppj
 
 ### Access Web App In Browser <a name="access"></a>
 
-### Minikube IP
+##### Minikube IP
 
 ```bash
 minikube ip
