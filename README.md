@@ -17,6 +17,7 @@ This is a multi-container Sign Up Form project. `Dockerfile` and `Docker Compose
 11. [Deploy MongoDB Database](#deploy-mongo)
 12. [Deploy Web App Backend](#deploy-be)
 13. [Deploy Web App Frontend](#deploy-fe)
+14. [Create All Components In Kubernetes](#create-components)
 
 ### Introduction <a name="intro"></a>
 
@@ -555,4 +556,56 @@ spec:
       port: 9000 # Matches the port exposed previously with Docker Compose
       targetPort: 8080 # Matches the port React app is running inside the container
       nodePort: 30101
+```
+
+### Create All Components In Kubernetes <a name="deploy-fe"></a>
+
+```bash
+kubectl apply -f <file-name.yaml>
+```
+
+Firstly we need to create the external configurations because they need to be there when we create `MongoDB` and `web application deployments`. Because they reference those configurations.
+
+```bash
+kubectl apply -f mongo-config.yaml
+```
+
+```bash
+kubectl apply -f mongo-secret.yaml
+```
+
+```bash
+kubectl apply -f mongo.yaml
+```
+
+```bash
+kubectl apply -f webapp-be.yaml
+```
+
+```bash
+kubectl apply -f webapp-fe.yaml
+```
+
+##### Check Node
+
+```bash
+kubectl get node
+```
+
+```bash
+NAME       STATUS   ROLES           AGE   VERSION
+minikube   Ready    control-plane   32d   v1.28.3
+```
+
+##### Check Pods
+
+```bash
+kubectl get pods
+```
+
+```bash
+NAME                                    READY   STATUS             RESTARTS        AGE
+mongo-deployment-7f85cb64d6-bw6bc       1/1     Running            2 (7m41s ago)   23m
+webapp-be-deployment-5448fd9cc6-5jjzw   1/1     Running            0               5m2s
+webapp-fe-deployment-7d9bbd8f59-vzppj   1/1     Running            0               4m7s
 ```
