@@ -1,8 +1,8 @@
-## App Deployment - Building Images With Docker & Deploying Apps With Kubernetes
+# App Deployment - Building Images With Docker & Deploying Apps With Kubernetes
 
 This is a multi-container Sign Up Form project. `Dockerfile` and `Docker Compose` used here to run the application on 3 containers. Follow the contents for details and usage.
 
-### Table of Contents
+## Table of Contents
 
 1. [Introduction](#intro)
 2. [Technologies](#tech)
@@ -21,39 +21,39 @@ This is a multi-container Sign Up Form project. `Dockerfile` and `Docker Compose
 15. [Get Information About K8S Components](#get-info)
 16. [Access Web App In Browser](#access)
 
-### Introduction <a name="intro"></a>
+## 1.Introduction <a name="intro"></a>
 
 This is a multi-container Sign-Up Form application running on frontend, backend and database containers built with `Dockerfile` and `Docker Compose`.
 
 This is a multi-container Sign Up Form project. This repository contains all the necessary code and configurations to deploy a fully functional Sign Up form application, comprising frontend, backend, and database components. By containerizing each part with Docker and utilizing Docker Compose, deployment becomes seamless and efficient.
 
-### Technologies <a name="tech"></a>
+## 2.Technologies <a name="tech"></a>
 
 The technologies used to develop and run the project listed below:
 
-##### Frontend
+### Frontend
 
 - TypeScript
 - React
 - React - Semantic UI
 
-##### Backend
+### Backend
 
 - TypeScript
 - Express (Node.js)
 
-##### Database
+### Database
 
 - MongoDB
 
-##### Containerization
+### Containerization
 
 The application runs on 3 containers for frontend, backend and database components.
 
 - Dockerfile (Building image)
 - Docker compose (Running multi-container application)
 
-### Dockerizing Frontend <a name="dockerizing-fe"></a>
+## 3.Dockerizing Frontend <a name="dockerizing-fe"></a>
 
 The frontend part of the application is containerized using Docker. This ensures that the frontend environment remains consistent across different platforms and deployments. To Dockerize the frontend, follow the steps outlined in the frontend `Dockerfile`.
 
@@ -74,7 +74,7 @@ The `.dockerignore` file is used also here to specify files and directories that
 
 The frontend image is built using `Docker Compose` in `docker-compose.yaml` configuration file for frontend part of the application.
 
-### Dockerizing Backend <a name="dockerizing-be"></a>
+## 4.Dockerizing Backend <a name="dockerizing-be"></a>
 
 Similar to the frontend, the backend of the application is also Dockerized. This ensures easy deployment and scalability. Refer to the backend Dockerfile for instructions on Dockerizing the backend.
 
@@ -93,7 +93,7 @@ The `.dockerignore` file is used also here to specify files and directories that
 
 The backend image is also built using `Docker Compose` in `docker-compose.yaml` configuration file for backend part of the application.
 
-### Docker Compose Configuration <a name="compose"></a>
+## 5.Docker Compose Configuration <a name="compose"></a>
 
 `Docker Compose` is a tool for defining and running `multi-container` applications. The project runs 3 containers with compose configuration.
 
@@ -161,7 +161,7 @@ docker-compose up
 ✔ Container signup-be-c                  Created 0.1s
 ```
 
-### Application Running With Containers<a name="app"></a>
+## 6.Application Running With Containers<a name="app"></a>
 
 The 3 containers for frontend, backend and database components are up and running after executing `docker-compose up` command. List running containers with this command:
 
@@ -192,9 +192,9 @@ CONTAINER ID   IMAGE                            COMMAND                  CREATED
 
 ![img](./assets/mongodb1.png)
 
-### Push Images To Dockerhub <a name="dockerhub"></a>
+## 7.Push Images To Dockerhub <a name="dockerhub"></a>
 
-##### Push Backend Image
+### Push Backend Image
 
 Create new public repository with name `dockerhub-username/signup-form-backend` at `Dockerhub`.
 
@@ -248,7 +248,7 @@ docker push berkesayin/signup-form-backend:1.0
 
 The push refers to repository [docker.io/berkesayin/signup-form-backend]
 
-##### Push Frontend Image
+### Push Frontend Image
 
 Create new public repository with name `dockerhub-username/signup-form-frontend` at `Dockerhub`.
 
@@ -306,7 +306,7 @@ Images pushed to `Dockerhub`.
 
 ![img](./assets/dockerhub2.png)
 
-### Setup Minikube Cluster <a name="minikube"></a>
+## 8.Setup Minikube Cluster <a name="minikube"></a>
 
 A `Kubernetes cluster` can be deployed on either physical or virtual machines. To get started with Kubernetes development, `Minikube` can be used.
 
@@ -314,11 +314,11 @@ A `Kubernetes cluster` can be deployed on either physical or virtual machines. T
 
 The `Minikube CLI` provides basic bootstrapping operations for working with your cluster including start, stop, status, and delete.
 
-##### Kubectl
+### Kubectl
 
 `kubectl` is the Kubernetes-specific command line tool that lets you communicate and control Kubernetes clusters. Whether you’re managing, creating, updating or deleting resources on your Kubernetes platform, `kubectl` is an essential tool. It enables communications between the `Kubernetes API` and the `Control Plane`.
 
-##### Install Minikube
+### Install Minikube
 
 `Minikube` can run either as a `container` or a `Virtual Machine`. Docker (container) is used in this example. Make sure it's installed for your system.
 
@@ -326,13 +326,7 @@ The `Minikube CLI` provides basic bootstrapping operations for working with your
 brew install minikube
 ```
 
-##### Start Minikube Cluster
-
-```bash
-minikube start
-```
-
-or
+### Start Minikube Cluster
 
 ```bash
 minikube start --driver docker
@@ -340,7 +334,7 @@ minikube start --driver docker
 
 ![img](./assets/minikube1.png)
 
-##### Check Container
+### Check Container
 
 ```bash
 docker ps
@@ -351,7 +345,7 @@ CONTAINER ID   IMAGE                                 COMMAND                  CR
 a5e09d3f8059   gcr.io/k8s-minikube/kicbase:v0.0.42   "/usr/local/bin/entr…"   4 weeks ago   Up 4 minutes   127.0.0.1:53230->22/tcp, 127.0.0.1:53231->2376/tcp, 127.0.0.1:53233->5000/tcp, 127.0.0.1:53229->8443/tcp, 127.0.0.1:53232->32443/tcp   minikube
 ```
 
-##### Check The Status Of The Cluster
+### Check The Status Of The Cluster
 
 ```bash
 minikube status
@@ -366,7 +360,7 @@ apiserver: Running
 kubeconfig: Configured
 ```
 
-##### Get Info About The Node In The Cluster
+### Get Info About The Node In The Cluster
 
 ```bash
 kubectl get node
@@ -377,7 +371,7 @@ NAME       STATUS   ROLES           AGE   VERSION
 minikube   Ready    control-plane   32d   v1.28.3
 ```
 
-### About The Project <a name="project-k8s"></a>
+### 9.About The Project <a name="project-k8s"></a>
 
 We will deploy a `MongoDB` database and a `web application` comprised of `frontend` and `backend` parts which will connect to the `MongoDB` database using external configuration data from `ConfigMap` and the `Secret`.
 
@@ -386,7 +380,7 @@ We will deploy a `MongoDB` database and a `web application` comprised of `fronte
 - `web-app-fe.yaml` : Deploy `web app backend`
 - `web-app-be.yaml` : Deploy `web app frontend`
 
-### External Configuration With ConfigMap and Secret <a name="configmap-secret"></a>
+## 10.External Configuration With ConfigMap and Secret <a name="configmap-secret"></a>
 
 ##### ConfigMap
 
@@ -414,7 +408,7 @@ data:
   mongo-password: MTIzNDU2
 ```
 
-### Deploy MongoDB Database <a name="deploy-mongo"></a>
+## 11.Deploy MongoDB Database <a name="deploy-mongo"></a>
 
 A `Kubernetes deployment` provides a means of changing or modifying the state of a pod, which may be one or more containers that are running, or a group of duplicate pods, known as ReplicaSets. Using a deployment allows you to easily keep a group of identical pods running with a common configuration. Once you have defined and deployed your `deployment` Kubernetes will then work to make sure all pods managed by the deployment meet whatever requirements you have set.
 
@@ -458,7 +452,7 @@ spec:
 
 We added a `Service` configuration because every application needs a service in `Kubernetes` and that's either a separate `yaml unit` or `yaml section` and we're going to separate it using three dashes `---` which is basic `yaml` syntax.
 
-### Deploy Web App Backend <a name="deploy-be"></a>
+## 12.Deploy Web App Backend <a name="deploy-be"></a>
 
 `webapp-be.yaml`
 
@@ -518,7 +512,7 @@ spec:
 
 The `backend deployment` includes environment variable configurations for connecting to `MongoDB`.
 
-### Deploy Web App Frontend <a name="deploy-fe"></a>
+## 13.Deploy Web App Frontend <a name="deploy-fe"></a>
 
 `webapp-fe.yaml`
 
@@ -560,7 +554,7 @@ spec:
       nodePort: 30200
 ```
 
-### Create All Components In Kubernetes <a name="create-components"></a>
+## 14.Create All Components In Kubernetes <a name="create-components"></a>
 
 ```bash
 kubectl apply -f <file-name.yaml>
@@ -588,21 +582,29 @@ kubectl apply -f webapp-be.yaml
 kubectl apply -f webapp-fe.yaml
 ```
 
-##### Check Node
+### Check Nodes
 
 ```bash
-kubectl get node
+kubectl get nodes
 ```
+
+or
+
+```bash
+kubectl get nodes -o wide
+```
+
+`-o wide` is optional to get more detailed information. It can also be used with other commands.
 
 ```bash
 NAME       STATUS   ROLES           AGE   VERSION
 minikube   Ready    control-plane   32d   v1.28.3
 ```
 
-##### Check Pods
+### Check Pods
 
 ```bash
-kubectl get pods
+kubectl get pods -o wide
 ```
 
 ```bash
@@ -612,9 +614,9 @@ webapp-be-deployment-5448fd9cc6-5jjzw   1/1     Running            0            
 webapp-fe-deployment-7d9bbd8f59-vzppj   1/1     Running            0               4m7s
 ```
 
-### Get Information About K8S Components <a name="get-info"></a>
+## 15.Get Information About K8S Components <a name="get-info"></a>
 
-##### Get All
+### Get All
 
 ```bash
 kubectl get all
@@ -644,12 +646,12 @@ deployment.apps/webapp-be-deployment   1/1     1            1           21m
 deployment.apps/webapp-fe-deployment   1/1     1            1           20m
 ```
 
-##### Get Components' Info
+### Get Components' Info
 
 ConfigMap
 
 ```bash
-kubectl get configmap
+kubectl get configmaps
 ```
 
 ```bash
@@ -661,7 +663,7 @@ mongo-config       1      31d
 Secret
 
 ```bash
-kubectl get secret
+kubectl get secrets
 ```
 
 ```bash
@@ -672,7 +674,7 @@ mongo-secret   Opaque   2      31d
 Deployment
 
 ```bash
-kubectl get deployment
+kubectl get deployments
 ```
 
 ```bash
@@ -682,10 +684,10 @@ webapp-be-deployment   1/1     1            1           38m
 webapp-fe-deployment   1/1     1            1           37m
 ```
 
-Service
+Services
 
 ```bash
-kubectl get service
+kubectl get services
 ```
 
 ```bash
@@ -723,9 +725,9 @@ kubectl logs webapp-be-deployment-5448fd9cc6-5jjzw
 kubectl logs webapp-fe-deployment-7d9bbd8f59-vzppj
 ```
 
-### Access Web App In Browser <a name="access"></a>
+## 16.Access Web App In Browser <a name="access"></a>
 
-##### Minikube IP
+### Minikube IP
 
 ```bash
 minikube ip
