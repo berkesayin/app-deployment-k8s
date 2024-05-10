@@ -782,3 +782,103 @@ Here, we get the `INTERNAL_IP` address of the `node`: `192.168.49.2`
 So, we found the `minikube IP` address. `192.168.49.2`. Now, we access the application at this port. `30200`
 
 `192.168.49.2:30200`
+
+Application Completed! The next step (port-forward method) is optional.
+
+##### Optional
+
+In case of `ERR_CONNECTION_REFUSED` error:
+
+Note: Firstly check the containers running:
+
+```sh
+docker ps
+```
+
+```sh
+CONTAINER ID   IMAGE                                 COMMAND                  CREATED          STATUS          PORTS                                                                                                                                  NAMES
+16ba58f3ee74   gcr.io/k8s-minikube/kicbase:v0.0.42   "/usr/local/bin/entr…"   47 minutes ago   Up 47 minutes   127.0.0.1:53096->22/tcp, 127.0.0.1:53097->2376/tcp, 127.0.0.1:53094->5000/tcp, 127.0.0.1:53095->8443/tcp, 127.0.0.1:53093->32443/tcp   minikube
+```
+
+The only container running is `minikube` container. In case of `ERR_CONNECTION_REFUSED` error, `kubectl port-forward` method can be applied.
+
+```sh
+kubectl get pods
+```
+
+```sh
+NAME                                    READY   STATUS    RESTARTS   AGE
+mongo-deployment-7f85cb64d6-6q4bj       1/1     Running   0          43m
+webapp-be-deployment-595549f94b-b66xp   1/1     Running   0          43m
+webapp-fe-deployment-68f9b74dd5-cs8lg   1/1     Running   0          43m
+```
+
+`Port Forward`:
+
+##### For `webapp-fe-deployment`
+
+```sh
+kubectl port-forward webapp-fe-deployment-68f9b74dd5-cs8lg 30200:8080
+```
+
+```sh
+Forwarding from 127.0.0.1:30200 -> 8080
+Forwarding from [::1]:30200 -> 8080
+Handling connection for 30200
+Handling connection for 30200
+Handling connection for 30200
+```
+
+Navigate to: http://localhost:30200
+
+![img](./assets/minikube2.png)
+
+##### For `webapp-be-deployment`
+
+```sh
+kubectl port-forward webapp-be-deployment-595549f94b-b66xp 30201:3000
+```
+
+```sh
+Forwarding from 127.0.0.1:30201 -> 3000
+Forwarding from [::1]:30201 -> 3000
+Handling connection for 30201
+
+```
+
+Navigate to: http://localhost:30201
+
+![img](./assets/minikube2.png)
+
+##### For `mongo-deployment`
+
+```sh
+kubectl port-forward mongo-deployment-7f85cb64d6-6q4bj 27017:27017
+```
+
+```sh
+Forwarding from 127.0.0.1:27017 -> 27017
+Forwarding from [::1]:27017 -> 27017
+Handling connection for 27017
+Handling connection for 27017
+
+```
+
+Connect to MongoDB Compass:
+
+![img](./assets/minikube4.png)
+
+![img](./assets/minikube5.png)
+
+```sh
+docker ps
+```
+
+```sh
+CONTAINER ID   IMAGE                                 COMMAND                  CREATED             STATUS             PORTS                                                                                                                                  NAMES
+16ba58f3ee74   gcr.io/k8s-minikube/kicbase:v0.0.42   "/usr/local/bin/entr…"   About an hour ago   Up About an hour   127.0.0.1:53096->22/tcp, 127.0.0.1:53097->2376/tcp, 127.0.0.1:53094->5000/tcp, 127.0.0.1:53095->8443/tcp, 127.0.0.1:53093->32443/tcp   minikube
+```
+
+The only container running is `minikube` container. In case of `ERR_CONNECTION_REFUSED` error, `kubectl port-forward` method can be applied as the optional example above.
+
+App deployment using Docker and Kubernetes example is completed..
