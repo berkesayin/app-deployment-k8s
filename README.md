@@ -341,8 +341,9 @@ docker ps
 ```
 
 ```bash
-CONTAINER ID   IMAGE                                 COMMAND                  CREATED       STATUS         PORTS                                                                                                                                  NAMES
-a5e09d3f8059   gcr.io/k8s-minikube/kicbase:v0.0.42   "/usr/local/bin/entr…"   4 weeks ago   Up 4 minutes   127.0.0.1:53230->22/tcp, 127.0.0.1:53231->2376/tcp, 127.0.0.1:53233->5000/tcp, 127.0.0.1:53229->8443/tcp, 127.0.0.1:53232->32443/tcp   minikube
+CONTAINER ID   IMAGE                                 COMMAND                  CREATED         STATUS         PORTS                                                                                                                                  NAMES
+16ba58f3ee74   gcr.io/k8s-minikube/kicbase:v0.0.42   "/usr/local/bin/entr…"   2 minutes ago   Up 2 minutes   127.0.0.1:53096->22/tcp, 127.0.0.1:53097->2376/tcp, 127.0.0.1:53094->5000/tcp, 127.0.0.1:53095->8443/tcp, 127.0.0.1:53093->32443/tcp   minikube
+
 ```
 
 ### Check The Status Of The Cluster
@@ -360,18 +361,28 @@ apiserver: Running
 kubeconfig: Configured
 ```
 
+```bash
+kubectl config get-contexts
+```
+
+```bash
+CURRENT   NAME             CLUSTER          AUTHINFO         NAMESPACE
+          docker-desktop   docker-desktop   docker-desktop
+*         minikube         minikube         minikube         default
+```
+
 ### Get Info About The Node In The Cluster
 
 ```bash
-kubectl get node
+kubectl get nodes -o wide
 ```
 
 ```bash
-NAME       STATUS   ROLES           AGE   VERSION
-minikube   Ready    control-plane   32d   v1.28.3
+NAME       STATUS   ROLES           AGE    VERSION   INTERNAL-IP    EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION    CONTAINER-RUNTIME
+minikube   Ready    control-plane   2d4h   v1.28.3   192.168.49.2   <none>        Ubuntu 22.04.3 LTS   6.6.22-linuxkit   docker://24.0.7
 ```
 
-### 9.About The Project <a name="project-k8s"></a>
+## 9.About The Project <a name="project-k8s"></a>
 
 We will deploy a `MongoDB` database and a `web application` comprised of `frontend` and `backend` parts which will connect to the `MongoDB` database using external configuration data from `ConfigMap` and the `Secret`.
 
@@ -382,7 +393,7 @@ We will deploy a `MongoDB` database and a `web application` comprised of `fronte
 
 ## 10.External Configuration With ConfigMap and Secret <a name="configmap-secret"></a>
 
-##### ConfigMap
+### ConfigMap
 
 `mongo-config.yaml`
 
@@ -556,31 +567,7 @@ spec:
 
 ## 14.Create All Components In Kubernetes <a name="create-components"></a>
 
-```bash
-kubectl apply -f <file-name.yaml>
-```
-
-Firstly we need to create the external configurations because they need to be there when we create `MongoDB` and `web application deployments`. Because they reference those configurations.
-
-```bash
-kubectl apply -f mongo-config.yaml
-```
-
-```bash
-kubectl apply -f mongo-secret.yaml
-```
-
-```bash
-kubectl apply -f mongo.yaml
-```
-
-```bash
-kubectl apply -f webapp-be.yaml
-```
-
-```bash
-kubectl apply -f webapp-fe.yaml
-```
+After starting minikube, check nodes:
 
 ### Check Nodes
 
@@ -597,8 +584,74 @@ kubectl get nodes -o wide
 `-o wide` is optional to get more detailed information. It can also be used with other commands.
 
 ```bash
-NAME       STATUS   ROLES           AGE   VERSION
-minikube   Ready    control-plane   32d   v1.28.3
+NAME       STATUS   ROLES           AGE    VERSION   INTERNAL-IP    EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION    CONTAINER-RUNTIME
+minikube   Ready    control-plane   2d4h   v1.28.3   192.168.49.2   <none>        Ubuntu 22.04.3 LTS   6.6.22-linuxkit   docker://24.0.7
+```
+
+Firstly we need to create the external configurations because they need to be there when we create `MongoDB` and `web application deployments`. Because they reference those configurations.
+
+```bash
+kubectl apply -f <file-name.yaml>
+```
+
+```bash
+kubectl apply -f mongo-config.yaml
+
+# configmap/mongo-config created
+```
+
+```bash
+kubectl apply -f mongo-secret.yaml
+
+# secret/mongo-secret created
+```
+
+```bash
+kubectl apply -f mongo.yaml
+
+# deployment.apps/mongo-deployment created
+# service/mongo-service created
+```
+
+```bash
+kubectl apply -f webapp-be.yaml
+
+# deployment.apps/webapp-be-deployment created
+# service/webapp-be-service created
+```
+
+```bash
+kubectl apply -f webapp-fe.yaml
+
+# deployment.apps/webapp-fe-deployment created
+# service/webapp-fe-service created
+```
+
+### Check Deployments
+
+```bash
+kubectl get deployments -o wide
+```
+
+```bash
+NAME                   READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS   IMAGES                                SELECTOR
+mongo-deployment       1/1     1            1           10m   mongodb      mongo:5.0                             app=mongo
+webapp-be-deployment   1/1     1            1           10m   webapp-be    berkesayin/signup-form-backend:1.0    app=webapp-be
+webapp-fe-deployment   1/1     1            1           10m   webapp-fe    berkesayin/signup-form-frontend:1.0   app=webapp-fe
+```
+
+### Check Services
+
+```bash
+kubectl get services -o wide
+```
+
+```bash
+NAME                TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE    SELECTOR
+kubernetes          ClusterIP   10.96.0.1        <none>        443/TCP          2d4h   <none>
+mongo-service       ClusterIP   10.105.106.79    <none>        80/TCP           11m    app=mongo
+webapp-be-service   NodePort    10.105.28.237    <none>        3000:30201/TCP   10m    app=webapp-be
+webapp-fe-service   NodePort    10.111.223.105   <none>        9000:30200/TCP   10m    app=webapp-fe
 ```
 
 ### Check Pods
@@ -608,10 +661,10 @@ kubectl get pods -o wide
 ```
 
 ```bash
-NAME                                    READY   STATUS             RESTARTS        AGE
-mongo-deployment-7f85cb64d6-bw6bc       1/1     Running            2 (7m41s ago)   23m
-webapp-be-deployment-5448fd9cc6-5jjzw   1/1     Running            0               5m2s
-webapp-fe-deployment-7d9bbd8f59-vzppj   1/1     Running            0               4m7s
+NAME                                    READY   STATUS    RESTARTS   AGE   IP           NODE       NOMINATED NODE   READINESS GATES
+mongo-deployment-7f85cb64d6-6q4bj       1/1     Running   0          11m   10.244.0.5   minikube   <none>           <none>
+webapp-be-deployment-595549f94b-b66xp   1/1     Running   0          11m   10.244.0.6   minikube   <none>           <none>
+webapp-fe-deployment-68f9b74dd5-cs8lg   1/1     Running   0          11m   10.244.0.7   minikube   <none>           <none>
 ```
 
 ## 15.Get Information About K8S Components <a name="get-info"></a>
@@ -619,31 +672,32 @@ webapp-fe-deployment-7d9bbd8f59-vzppj   1/1     Running            0            
 ### Get All
 
 ```bash
-kubectl get all
+kubectl get all - wide
 ```
 
 This command includes `deployments`, the `pods` behind the `deployment`, and all the `services`.
 
 ```bash
-NAME                                        READY   STATUS             RESTARTS         AGE
-pod/mongo-deployment-7f85cb64d6-bw6bc       1/1     Running            2 (10m ago)      26m
-pod/webapp-be-deployment-5448fd9cc6-5jjzw   1/1     Running            0                8m7s
-pod/webapp-fe-deployment-7d9bbd8f59-vzppj   1/1     Running            0                7m12s
-```
+NAME                                        READY   STATUS    RESTARTS   AGE   IP           NODE       NOMINATED NODE   READINESS GATES
+pod/mongo-deployment-7f85cb64d6-6q4bj       1/1     Running   0          13m   10.244.0.5   minikube   <none>           <none>
+pod/webapp-be-deployment-595549f94b-b66xp   1/1     Running   0          13m   10.244.0.6   minikube   <none>           <none>
+pod/webapp-fe-deployment-68f9b74dd5-cs8lg   1/1     Running   0          13m   10.244.0.7   minikube   <none>           <none>
 
-```bash
-NAME                        TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
-service/kubernetes          ClusterIP   10.96.0.1       <none>        443/TCP          32d
-service/mongo-service       ClusterIP   10.96.149.186   <none>        80/TCP           31d
-service/webapp-be-service   NodePort    10.100.47.128   <none>        3000:30200/TCP   20m
-service/webapp-fe-service   NodePort    10.97.246.146   <none>        9000:30201/TCP   20m
-```
+NAME                        TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE    SELECTOR
+service/kubernetes          ClusterIP   10.96.0.1        <none>        443/TCP          2d4h   <none>
+service/mongo-service       ClusterIP   10.105.106.79    <none>        80/TCP           13m    app=mongo
+service/webapp-be-service   NodePort    10.105.28.237    <none>        3000:30201/TCP   13m    app=webapp-be
+service/webapp-fe-service   NodePort    10.111.223.105   <none>        9000:30200/TCP   13m    app=webapp-fe
 
-```bash
-NAME                                   READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/mongo-deployment       1/1     1            1           31d
-deployment.apps/webapp-be-deployment   1/1     1            1           21m
-deployment.apps/webapp-fe-deployment   1/1     1            1           20m
+NAME                                   READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS   IMAGES                                SELECTOR
+deployment.apps/mongo-deployment       1/1     1            1           13m   mongodb      mongo:5.0                             app=mongo
+deployment.apps/webapp-be-deployment   1/1     1            1           13m   webapp-be    berkesayin/signup-form-backend:1.0    app=webapp-be
+deployment.apps/webapp-fe-deployment   1/1     1            1           13m   webapp-fe    berkesayin/signup-form-frontend:1.0   app=webapp-fe
+
+NAME                                              DESIRED   CURRENT   READY   AGE   CONTAINERS   IMAGES                                SELECTOR
+replicaset.apps/mongo-deployment-7f85cb64d6       1         1         1       13m   mongodb      mongo:5.0                             app=mongo,pod-template-hash=7f85cb64d6
+replicaset.apps/webapp-be-deployment-595549f94b   1         1         1       13m   webapp-be    berkesayin/signup-form-backend:1.0    app=webapp-be,pod-template-hash=595549f94b
+replicaset.apps/webapp-fe-deployment-68f9b74dd5   1         1         1       13m   webapp-fe    berkesayin/signup-form-frontend:1.0   app=webapp-fe,pod-template-hash=68f9b74dd5
 ```
 
 ### Get Components' Info
@@ -651,78 +705,51 @@ deployment.apps/webapp-fe-deployment   1/1     1            1           20m
 ConfigMap
 
 ```bash
-kubectl get configmaps
+kubectl get configmaps -o wide
 ```
 
 ```bash
 NAME               DATA   AGE
-kube-root-ca.crt   1      32d
-mongo-config       1      31d
+kube-root-ca.crt   1      2d4h
+mongo-config       1      14m
 ```
 
 Secret
 
 ```bash
-kubectl get secrets
+kubectl get secrets -o wide
 ```
 
 ```bash
 NAME           TYPE     DATA   AGE
-mongo-secret   Opaque   2      31d
-```
-
-Deployment
-
-```bash
-kubectl get deployments
-```
-
-```bash
-NAME                   READY   UP-TO-DATE   AVAILABLE   AGE
-mongo-deployment       1/1     1            1           31d
-webapp-be-deployment   1/1     1            1           38m
-webapp-fe-deployment   1/1     1            1           37m
-```
-
-Services
-
-```bash
-kubectl get services
-```
-
-```bash
-NAME                TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
-kubernetes          ClusterIP   10.96.0.1       <none>        443/TCP          32d
-mongo-service       ClusterIP   10.96.149.186   <none>        80/TCP           31d
-webapp-be-service   NodePort    10.100.47.128   <none>        3000:30200/TCP   39m
-webapp-fe-service   NodePort    10.97.246.146   <none>        9000:30201/TCP   39m
+mongo-secret   Opaque   2      14m
 ```
 
 ### Logs
 
 ```bash
-kubectl get pods
+kubectl get pods - wide
 ```
 
 ```bash
-NAME                                    READY   STATUS             RESTARTS         AGE
-mongo-deployment-7f85cb64d6-bw6bc       1/1     Running            2 (30m ago)      46m
-webapp-be-deployment-5448fd9cc6-5jjzw   1/1     Running            0                27m
-webapp-fe-deployment-7d9bbd8f59-vzppj   1/1     Running            0                27m
+NAME                                    READY   STATUS    RESTARTS   AGE   IP           NODE       NOMINATED NODE   READINESS GATES
+mongo-deployment-7f85cb64d6-6q4bj       1/1     Running   0          14m   10.244.0.5   minikube   <none>           <none>
+webapp-be-deployment-595549f94b-b66xp   1/1     Running   0          14m   10.244.0.6   minikube   <none>           <none>
+webapp-fe-deployment-68f9b74dd5-cs8lg   1/1     Running   0          14m   10.244.0.7   minikube   <none>           <none>
 ```
 
 Logs
 
 ```bash
-kubectl logs mongo-deployment-7f85cb64d6-bw6bc
+kubectl logs mongo-deployment-7f85cb64d6-6q4bj
 ```
 
 ```bash
-kubectl logs webapp-be-deployment-5448fd9cc6-5jjzw
+kubectl logs webapp-be-deployment-595549f94b-b66xp
 ```
 
 ```bash
-kubectl logs webapp-fe-deployment-7d9bbd8f59-vzppj
+kubectl logs webapp-fe-deployment-68f9b74dd5-cs8lg
 ```
 
 ## 16.Access Web App In Browser <a name="access"></a>
@@ -740,7 +767,7 @@ minikube ip
 or
 
 ```bash
-kubectl get node -o wide
+kubectl get nodes -o wide
 ```
 
 We can also use `-o wide` option with any other get command or services, pods etc to get some additional info.
